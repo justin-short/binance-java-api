@@ -3,7 +3,6 @@ package com.binance.api.client.impl;
 import com.binance.api.client.BinanceApiCallback;
 import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.config.BinanceApiConfig;
-import com.binance.api.client.constant.BinanceApiConstants;
 import com.binance.api.client.domain.event.AggTradeEvent;
 import com.binance.api.client.domain.event.AllMarketTickersEvent;
 import com.binance.api.client.domain.event.CandlestickEvent;
@@ -27,9 +26,11 @@ import java.util.stream.Collectors;
 public class BinanceApiWebSocketClientImpl implements BinanceApiWebSocketClient, Closeable {
 
     private final OkHttpClient client;
+    private final BinanceApiConfig config;
 
-    public BinanceApiWebSocketClientImpl(OkHttpClient client) {
-        this.client = client;
+    public BinanceApiWebSocketClientImpl(BinanceApiServiceGenerator service, BinanceApiConfig config) {
+        this.client = service.getSharedClient();
+		this.config = config;
     }
 
     @Override
@@ -74,7 +75,7 @@ public class BinanceApiWebSocketClientImpl implements BinanceApiWebSocketClient,
     public void close() { }
 
     private Closeable createNewWebSocket(String channel, BinanceApiWebSocketListener<?> listener) {
-        String streamingUrl = String.format("%s/%s", BinanceApiConfig.getStreamApiBaseUrl(), channel);
+        String streamingUrl = String.format("%s/%s", config.getStreamApiBaseUrl(), channel);
         Request request = new Request.Builder().url(streamingUrl).build();
         final WebSocket webSocket = client.newWebSocket(request, listener);
         return () -> {

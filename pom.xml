@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.binance.api</groupId>
-  <artifactId>binance-api-client</artifactId>
+  <artifactId>justins-binance-api-client</artifactId>
   <version>1.0.1</version>
   <licenses>
     <license>

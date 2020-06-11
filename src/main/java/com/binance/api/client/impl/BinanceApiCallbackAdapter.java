@@ -9,17 +9,17 @@ import retrofit2.Response;
 
 import java.io.IOException;
 
-import static com.binance.api.client.impl.BinanceApiServiceGenerator.getBinanceApiError;
-
 /**
  * An adapter/wrapper which transforms a Callback from Retrofit into a BinanceApiCallback which is exposed to the client.
  */
 public class BinanceApiCallbackAdapter<T> implements Callback<T> {
 
   private final BinanceApiCallback<T> callback;
+  private final BinanceApiServiceGenerator generator;
 
-  public BinanceApiCallbackAdapter(BinanceApiCallback<T> callback) {
-    this.callback = callback;
+  public BinanceApiCallbackAdapter(BinanceApiServiceGenerator generator, BinanceApiCallback<T> callback) {
+    this.generator = generator;
+	this.callback = callback;
   }
 
   public void onResponse(Call<T> call, Response<T> response) {
@@ -32,7 +32,7 @@ public class BinanceApiCallbackAdapter<T> implements Callback<T> {
         return;
       }
       try {
-        BinanceApiError apiError = getBinanceApiError(response);
+        BinanceApiError apiError = generator.getBinanceApiError(response);
         onFailure(call, new BinanceApiException(apiError));
       } catch (IOException e) {
         onFailure(call, new BinanceApiException(e));
